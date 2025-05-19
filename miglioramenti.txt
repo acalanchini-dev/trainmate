@@ -1,0 +1,46 @@
+Nuove funzionalità da implementare
+Ecco alcune idee di funzionalità che potrebbero migliorare l'applicazione e differenziare i piani di abbonamento:
+
+1. Miglioramenti alla gestione clienti
+Importazione/esportazione clienti (CSV, Excel)
+Foto dei clienti
+Gestione dati antropometrici (peso, altezza, body fat %)
+Tracciamento dei progressi con grafici
+"Cartella cliente" con note, documenti e certificati medici
+2. Funzionalità avanzate per piani di allenamento
+Libreria di esercizi precofigurati con immagini/video
+Modelli di piani di allenamento riutilizzabili
+Progressione automatica dei carichi
+App mobile per i clienti per seguire il piano
+Feedback dei clienti sui piani di allenamento
+3. Sistema di pagamenti avanzato
+Integrazione con Stripe per pagamenti automatici
+Abbonamenti ricorrenti per i clienti
+Gestione di sconti e promozioni
+Fatturazione automatica
+Dashboard finanziaria avanzata
+4. Strumenti di marketing
+Email marketing per i clienti
+Sistema di referral per nuovi clienti
+Pagina di prenotazione pubblica per potenziali clienti
+Integrazione con social media
+5. Funzionalità di automazione
+Promemoria automatici per appuntamenti
+Rinnovo automatico dei pacchetti
+Workflow personalizzati (es. email di benvenuto, follow-up dopo la prima sessione)
+Automazione delle attività ricorrenti
+6. Analisi e reporting avanzati
+Report dettagliati su rendimento, clienti, finanze
+Previsioni di fatturato
+Analisi di ritenzione dei clienti
+Dashboard personalizzabili
+7. Multilingua e localizzazione
+Supporto per più lingue
+Formati di data e valuta localizzati
+8. Esperienza mobile
+App mobile dedicata o PWA
+Funzionalità offline
+9. Integrazioni
+Integrazione con software di contabilità
+Integrazione con wearable e app di fitness
+Integrazione con Google Calendar/Outlook

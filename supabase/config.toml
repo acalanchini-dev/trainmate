@@ -1,0 +1,14 @@
+
+project_id = "dgfqotxmkkkccxyzoajn"
+
+[functions.send-training-plan]
+verify_jwt = true
+
+[realtime]
+enabled = true
+
+[realtime.tables.anthropometric_data]
+enabled = true
+
+[realtime.tables.client_documents]
+enabled = true
