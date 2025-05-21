@@ -1,4 +1,3 @@
-
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -51,6 +50,15 @@ export const useTrainingPlanQueries = (clientId?: string) => {
 
       if (planError) throw planError;
 
+      // Ottieni i gruppi
+      const { data: groups, error: groupsError } = await supabase
+        .from('exercise_groups')
+        .select('*')
+        .eq('training_plan_id', planId)
+        .order('order', { ascending: true });
+
+      if (groupsError) throw groupsError;
+
       // Ottieni gli esercizi
       const { data: exercises, error: exercisesError } = await supabase
         .from('exercises')
@@ -60,6 +68,24 @@ export const useTrainingPlanQueries = (clientId?: string) => {
 
       if (exercisesError) throw exercisesError;
 
+      // Se abbiamo gruppi, associamo gli esercizi ai rispettivi gruppi
+      if (groups && groups.length > 0) {
+        const exerciseGroups = groups.map(group => {
+          const groupExercises = exercises?.filter(ex => ex.group_id === group.id) || [];
+          return {
+            ...group,
+            exercises: groupExercises
+          };
+        });
+
+        return {
+          ...plan,
+          exercise_groups: exerciseGroups,
+          exercises: exercises || [] // Manteniamo anche l'array piatto per compatibilità
+        };
+      }
+
+      // Se non ci sono gruppi, restituisci solo gli esercizi
       return {
         ...plan,
         exercises: exercises || []

@@ -114,7 +114,7 @@ export const reducer = (state: State, action: Action): State => {
         ...state,
         toasts: newToasts,
       }
-    }
+      }
 
     case actionTypes.UPDATE_TOAST:
       return {
@@ -158,7 +158,7 @@ export const reducer = (state: State, action: Action): State => {
         ...state,
         toasts: state.toasts.filter((t) => t.id !== action.toastId),
       }
-    }
+      }
   }
 }
 

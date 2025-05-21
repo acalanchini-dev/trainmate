@@ -1,7 +1,17 @@
+export interface ExerciseGroup {
+  id?: string;
+  training_plan_id: string;
+  title: string;
+  order: number;
+  created_at?: string;
+  updated_at?: string;
+  exercises?: Exercise[];
+}
 
 export interface Exercise {
   id?: string;
   training_plan_id: string;
+  group_id?: string;
   name: string;
   sets: number;
   reps: string;
@@ -20,6 +30,7 @@ export interface TrainingPlan {
   client_id: string;
   user_id?: string;
   exercises?: Exercise[];
+  exercise_groups?: ExerciseGroup[];
   created_at?: string;
   updated_at?: string;
 }

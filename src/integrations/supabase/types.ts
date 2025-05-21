@@ -251,6 +251,7 @@ export type Database = {
           reps: string
           sets: number
           training_plan_id: string
+          group_id: string | null
           updated_at: string | null
           video_link: string | null
         }
@@ -264,6 +265,7 @@ export type Database = {
           reps: string
           sets: number
           training_plan_id: string
+          group_id?: string | null
           updated_at?: string | null
           video_link?: string | null
         }
@@ -277,6 +279,7 @@ export type Database = {
           reps?: string
           sets?: number
           training_plan_id?: string
+          group_id?: string | null
           updated_at?: string | null
           video_link?: string | null
         }
@@ -288,6 +291,48 @@ export type Database = {
             referencedRelation: "training_plans"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "exercises_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "exercise_groups"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      exercise_groups: {
+        Row: {
+          id: string
+          training_plan_id: string
+          title: string
+          order: number
+          created_at: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          id?: string
+          training_plan_id: string
+          title: string
+          order: number
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          id?: string
+          training_plan_id?: string
+          title?: string
+          order?: number
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "exercise_groups_training_plan_id_fkey"
+            columns: ["training_plan_id"]
+            isOneToOne: false
+            referencedRelation: "training_plans"
+            referencedColumns: ["id"]
+          }
         ]
       }
       profiles: {

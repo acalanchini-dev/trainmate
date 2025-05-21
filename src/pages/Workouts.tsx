@@ -30,7 +30,7 @@ const Workouts = () => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedClientId, setSelectedClientId] = useState<string>("all");
   const [localTrainingPlans, setLocalTrainingPlans] = useState<TrainingPlan[]>([]);
-  
+
   // Dettagli del piano di allenamento selezionato
   const { data: selectedPlanDetails, isLoading: isLoadingDetails } = useTrainingPlanDetails(selectedWorkout || undefined);
 

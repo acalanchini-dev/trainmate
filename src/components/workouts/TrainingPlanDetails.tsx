@@ -4,7 +4,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Button } from "@/components/ui/button";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { supabase } from "@/integrations/supabase/client";
-import { Edit, Eye, Trash, Calendar, FileText, Info, Dumbbell, Link as LinkIcon, Clock, CalendarDays } from "lucide-react";
+import { Edit, Eye, Trash, Calendar, FileText, Info, Dumbbell, Link as LinkIcon, Clock, CalendarDays, Share2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { TrainingPlan } from "@/types/training";
 import { format } from 'date-fns';
@@ -133,7 +133,7 @@ const TrainingPlanDetails: React.FC<TrainingPlanDetailsProps> = ({ planId, isOpe
       // Utilizziamo la funzione send-email-training-plan per inviare email con allegati
       const emailResponse = await supabase.functions.invoke('send-email-training-plan', {
         body: {
-          to: email,
+        to: email,
           subject: `Piano di allenamento - ${planDetails?.name}`,
           html: `
             <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
@@ -169,6 +169,16 @@ const TrainingPlanDetails: React.FC<TrainingPlanDetailsProps> = ({ planId, isOpe
         description: `Impossibile inviare l'email: ${errorMessage}`
       });
     }
+  };
+
+  const handleShare = () => {
+    const url = `${window.location.origin}/piano/${planId}`;
+    navigator.clipboard.writeText(url).then(() => {
+      toast({
+        title: "Link copiato",
+        description: "Il link al piano di allenamento è stato copiato negli appunti"
+      });
+    });
   };
 
   if (!isOpen) return null;
@@ -331,6 +341,18 @@ const TrainingPlanDetails: React.FC<TrainingPlanDetailsProps> = ({ planId, isOpe
                 </TooltipTrigger>
                 <TooltipContent>
                   <p>Invia il piano via email</p>
+                </TooltipContent>
+              </Tooltip>
+
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button variant="outline" onClick={handleShare}>
+                    <Share2 className="mr-2 h-4 w-4" />
+                    Condividi
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Copia il link pubblico del piano</p>
                 </TooltipContent>
               </Tooltip>
           </div>

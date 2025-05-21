@@ -4,17 +4,19 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Dumbbell, LinkIcon, Trash, Mail } from 'lucide-react';
+import { Dumbbell, LinkIcon, Trash, Mail, Layers } from 'lucide-react';
 import { 
   AlertDialog, AlertDialogAction, AlertDialogCancel, 
   AlertDialogContent, AlertDialogDescription, AlertDialogFooter, 
   AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger 
 } from "@/components/ui/alert-dialog";
-import { TrainingPlan } from "@/hooks/use-training-plans";
+import { TrainingPlan, Exercise } from "@/types/training";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 
 interface ClientInfo {
   id: string;
@@ -120,6 +122,60 @@ const WorkoutDetails = ({
     }
   };
 
+  // Funzione per renderizzare un esercizio
+  const renderExercise = (exercise: Exercise, index?: number) => {
+    return (
+      <div key={exercise.id} className="border p-4 rounded-md">
+        <div className="flex justify-between items-center">
+          <div className="flex items-center gap-2">
+            <Checkbox 
+              id={`complete-${exercise.id}`}
+              checked={!!exercise.completed}
+              onCheckedChange={(checked) => 
+                exercise.id && onUpdateExerciseCompletion(
+                  exercise.id, 
+                  !!checked
+                )
+              }
+            />
+            <h4 className={`font-medium ${exercise.completed ? 'line-through text-muted-foreground' : ''}`}>
+              {index !== undefined && <Badge variant="outline" className="mr-2">{index + 1}</Badge>}
+              {exercise.name}
+            </h4>
+          </div>
+
+          {exercise.video_link && (
+            <a 
+              href={exercise.video_link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary hover:underline flex items-center gap-1"
+            >
+              <LinkIcon size={14} /> Video
+            </a>
+          )}
+        </div>
+        
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mt-2">
+          <div>
+            <p className="text-xs text-muted-foreground">Serie</p>
+            <p className="text-sm">{exercise.sets}</p>
+          </div>
+          <div>
+            <p className="text-xs text-muted-foreground">Ripetizioni</p>
+            <p className="text-sm">{exercise.reps}</p>
+          </div>
+          {exercise.notes && (
+            <div className="col-span-2 md:col-span-1">
+              <p className="text-xs text-muted-foreground">Note</p>
+              <p className="text-sm">{exercise.notes}</p>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  };
+
   return (
     <>
       <Dialog open={selectedWorkout !== null} onOpenChange={(open) => !open && onClose()}>
@@ -143,65 +199,42 @@ const WorkoutDetails = ({
             </div>
           )}
           
-          <div className="space-y-4">
-            <h3 className="font-medium text-lg">Esercizi</h3>
-            
-            {selectedPlanDetails.exercises && selectedPlanDetails.exercises.length > 0 ? (
-              selectedPlanDetails.exercises.map((exercise) => (
-                <div key={exercise.id} className="border p-4 rounded-md">
-                  <div className="flex justify-between items-center">
-                    <div className="flex items-center gap-2">
-                      <Checkbox 
-                        id={`complete-${exercise.id}`}
-                        checked={!!exercise.completed}
-                        onCheckedChange={(checked) => 
-                          exercise.id && onUpdateExerciseCompletion(
-                            exercise.id, 
-                            !!checked
-                          )
-                        }
-                      />
-                      <h4 className={`font-medium ${exercise.completed ? 'line-through text-muted-foreground' : ''}`}>
-                        {exercise.name}
-                      </h4>
-                    </div>
-
-                    {exercise.video_link && (
-                      <a 
-                        href={exercise.video_link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-primary hover:underline flex items-center gap-1"
-                      >
-                        <LinkIcon size={14} /> Video
-                      </a>
+          <div className="space-y-6">
+            {/* Visualizzazione per il nuovo formato con gruppi */}
+            {selectedPlanDetails.exercise_groups && selectedPlanDetails.exercise_groups.length > 0 ? (
+              selectedPlanDetails.exercise_groups.map((group, groupIndex) => (
+                <Card key={groupIndex} className="border">
+                  <CardHeader className="py-3 px-4">
+                    <CardTitle className="text-base flex items-center gap-2">
+                      <Layers size={16} />
+                      {group.title}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="py-2 px-4 space-y-3">
+                    {group.exercises && group.exercises.length > 0 ? (
+                      group.exercises.map((exercise, exerciseIndex) => renderExercise(exercise, exerciseIndex))
+                    ) : (
+                      <p className="text-muted-foreground">Nessun esercizio in questo gruppo.</p>
                     )}
-                  </div>
-                  
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mt-2">
-                    <div>
-                      <p className="text-xs text-muted-foreground">Serie</p>
-                      <p className="text-sm">{exercise.sets}</p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-muted-foreground">Ripetizioni</p>
-                      <p className="text-sm">{exercise.reps}</p>
-                    </div>
-                    {exercise.notes && (
-                      <div className="col-span-2 md:col-span-1">
-                        <p className="text-xs text-muted-foreground">Note</p>
-                        <p className="text-sm">{exercise.notes}</p>
-                      </div>
-                    )}
-                  </div>
-                </div>
+                  </CardContent>
+                </Card>
               ))
+            ) : 
+            /* Retrocompatibilità: Visualizzazione per il vecchio formato senza gruppi */
+            selectedPlanDetails.exercises && selectedPlanDetails.exercises.length > 0 ? (
+              <div className="space-y-4">
+                <h3 className="font-medium text-lg">Esercizi</h3>
+                {selectedPlanDetails.exercises.map((exercise, index) => renderExercise(exercise, index))}
+              </div>
             ) : (
-              <p className="text-muted-foreground">Nessun esercizio presente in questo piano.</p>
+              <div>
+                <h3 className="font-medium text-lg mb-2">Esercizi</h3>
+                <p className="text-muted-foreground">Nessun esercizio presente in questo piano.</p>
+              </div>
             )}
           </div>
           
-          <div className="flex justify-between mt-4">
+          <div className="flex justify-between mt-6">
             <div className="flex gap-2">
               <Button variant="outline" size="sm" onClick={onEdit}>
                 Modifica

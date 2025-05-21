@@ -38,7 +38,7 @@ export function ClientTrainingPlansList({
       setLocalTrainingPlans(trainingPlans);
     }
   }, [trainingPlans]);
-  
+
   const handleViewPlan = (planId: string) => {
     setSelectedPlanId(planId);
   };
